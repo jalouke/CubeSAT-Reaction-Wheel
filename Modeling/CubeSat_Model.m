@@ -7,13 +7,16 @@ Ic_xx = 2.45; Ic_yy = 2.49; Ic_zz = 2.52; #principal inertia values (lb*in^2)
 I_rw = 0.0198; #rotational inertia of the reaction wheels (lb*in^2)
 C = 0; #cost function value
 b_a = 0.01; b_b = 0.01; b_c = 0.01; #damping coefficients
-g_a = 0.001; g_b = 0.001; g_c = 0.001; #spring constants 
-TF_cube_coeff_a = [Ic_xx/(sind(45)*I_rw), Ic_yy/(cosd(45)*I_rw), Ic_zz/(cosd(53)*I_rw)];
-TF_cube_coeff_b = [b_a/(sind(45)*I_rw), b_b/(cosd(45)*I_rw), b_c/(cosd(53)*I_rw)];
-TF_cube_coeff_c = [g_a/(sind(45)*I_rw), g_b/(cosd(45)*I_rw), g_c/(cosd(53)*I_rw)];
-mK_a = 0.5; mK_b = 0.05; mK_c = 0.06; mK_d = 0.01;
+g_a = 0.0; g_b = 0.0; g_c = 0.0; #spring constants 
+TF_cube_coeff_a = [Ic_xx/I_rw, Ic_yy/I_rw, Ic_zz/I_rw];
+TF_cube_coeff_b = [b_a/I_rw, b_b/I_rw, b_c/I_rw];
+TF_cube_coeff_c = [g_a/I_rw, g_b/I_rw, g_c/I_rw];
+#TF_cube_coeff_a = [Ic_xx/(sind(45)*I_rw), Ic_yy/(cosd(45)*I_rw), Ic_zz/(cosd(53)*I_rw)];
+#TF_cube_coeff_b = [b_a/(sind(45)*I_rw), b_b/(cosd(45)*I_rw), b_c/(cosd(53)*I_rw)];
+#TF_cube_coeff_c = [g_a/(sind(45)*I_rw), g_b/(cosd(45)*I_rw), g_c/(cosd(53)*I_rw)];
+mK_a = 0.01; mK_b = 0.005; mK_c = 0.06; mK_d = 0.1;
 c_a = 0.3535533905932737; c_b = 0.3535533905932737; c_c = 0.415410035280621;
-t = 0:0.02:15;
+t = 0:0.02:5;
 
 s = tf('s');
 #Transfer functions are 
@@ -45,15 +48,15 @@ figure(1);
 hold on;
 subplot(3,2,1)
 plot(t,y_x);
-xlabel('seconds','FontSize',12);
-ylabel("Cube Angular Velocity\n(degrees/s)",'FontSize',12);
-title('step response (angular velocity) of x-axis','FontSize',12)
+xlabel('seconds');
+ylabel("Cube Angular Velocity\n(degrees/s)");
+title('step response (angular velocity) of x-axis')
 legend('cube-x')
 subplot(3,2,2)
 plot(t,omega_a,'k',t,omega_b,'r',t,omega_c,'g',t,omega_d,'b')
 xlabel('seconds','FontSize',12);
-ylabel("Motor Angular Velocity\n(degrees/s)",'FontSize',12);
-title('Motor velocities','FontSize',12)
+ylabel("Motor Angular Velocity\n(degrees/s)");
+title('Motor velocities')
 legend('Motor A','Motor B','Motor C','Motor D')
 #y step with motor velocity
 y_x=0;y_y=0;y_z=0;
@@ -66,15 +69,15 @@ omega_c = -c_a*y_x - c_b*y_y + c_c*y_z;
 omega_d = -c_a*y_x + c_b*y_y + c_c*y_z;
 subplot(3,2,3)
 plot(t,y_y);
-xlabel('seconds','FontSize',12);
-ylabel("Cube Angular Velocity\n(degrees/s)",'FontSize',12);
-title('step response (angular velocity) of y-axis','FontSize',12)
+xlabel('seconds');
+ylabel("Cube Angular Velocity\n(degrees/s)");
+title('step response (angular velocity) of y-axis')
 legend('cube-y')
 subplot(3,2,4)
 plot(t,omega_a,'k',t,omega_b,'r',t,omega_c,'g',t,omega_d,'b')
-xlabel('seconds','FontSize',12);
-ylabel("Motor Angular Velocity\n(degrees/s)",'FontSize',12);
-title('motor velocities','FontSize',12)
+xlabel('seconds');
+ylabel("Motor Angular Velocity\n(degrees/s)");
+title('motor velocities')
 legend('Motor A','Motor B','Motor C','Motor D')
 #y step with motor velocity
 y_x=0;y_y=0;y_z=0;
@@ -87,15 +90,15 @@ omega_c = -c_a*y_x - c_b*y_y + c_c*y_z;
 omega_d = -c_a*y_x + c_b*y_y + c_c*y_z;
 subplot(3,2,5)
 plot(t,y_z);
-xlabel('seconds','FontSize',12);
-ylabel('Cube (degrees/s)','FontSize',12);
+xlabel('seconds');
+ylabel('Cube (degrees/s)');
 title('step response (angular velocity) of z-axis')
 legend('cube-z')
 subplot(3,2,6)
 plot(t,omega_a,'k',t,omega_b,'r',t,omega_c,'g',t,omega_d,'b')
-xlabel('seconds','FontSize',12);
-ylabel('Motors (degrees/s)','FontSize',12);
-title('Motor velocities','FontSize',12)
+xlabel('seconds');
+ylabel('Motors (degrees/s)');
+title('Motor velocities')
 legend('Motor A','Motor B','Motor C','Motor D')
 hold off;
 #vector step (i+j+k) with motor velocity
