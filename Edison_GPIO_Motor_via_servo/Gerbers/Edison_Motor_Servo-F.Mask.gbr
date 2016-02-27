@@ -1,7 +1,7 @@
 G04 #@! TF.FileFunction,Soldermask,Top*
 %FSLAX46Y46*%
 G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
-G04 Created by KiCad (PCBNEW 4.0.2-4+6225~38~ubuntu15.10.1-stable) date Sat 27 Feb 2016 12:53:00 PM PST*
+G04 Created by KiCad (PCBNEW 4.0.2-4+6225~38~ubuntu15.10.1-stable) date Sat 27 Feb 2016 01:04:02 PM PST*
 %MOMM*%
 G01*
 G04 APERTURE LIST*
