@@ -72,6 +72,30 @@ cube_TF_Dx = tf(num_cube_Dx, den_cube_Dx);
 cube_TF_Dy = tf(num_cube_Dy, den_cube_Dy);
 cube_TF_Dz = tf(num_cube_Dz, den_cube_Dz);
 
+cube_TF = [[cube_TF_Ax,cube_TF_Bx,cube_TF_Cx,cube_TF_Dx];[cube_TF_Ay,cube_TF_By,cube_TF_Cy,cube_TF_Dy] ...
+;[cube_TF_Az,cube_TF_Bz,cube_TF_Cz,cube_TF_Dz]];
+
+%Cardinal to motor transform equations
+%mA_c = c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
+%mB_c = c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
+%mC_c = -c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
+%mD_c = -c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
+
+Card_to_Motor = sys_motor * [[c_a,c_b,c_c];[c_a,-c_b,c_c];[-c_a,-c_b,c_c];[-c_a,c_b,c_c]];
+
+Full_cube_TF = cube_TF*Card_to_Motor;
+[X_i,t] = gensig('square',2,1.25,0.001);
+Y_i = ones(1,length(t))'; Z_i = 2*ones(1,length(t))';
+X_i = (-X_i+1)*18;
+
+
+[y_b,t,x] = lsim(Full_cube_TF, [X_i,Y_i,Z_i], t);
+figure(2)
+plot(t,y_b)
+
+[y_c,t,x] = step(Full_cube_TF);
+figure(3)
+plot(t,y_c)
 
 #Step X-axis only
 X_i = 0; Y_i = 0; Z_i = 0;
@@ -126,118 +150,118 @@ ylabel(hAx(2),'Cube Angular Position (rad)') % right y-axis
 title('Cube Response')
 xlabel('Time (sec)')
 
-t = 0:0.01:1;
-#Step Y-axis only
-X_i = 0; Y_i = 0; Z_i = 0;
-Y_i = ones(1,length(t));
-mA_c = c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
-mB_c = c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
-mC_c = -c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
-mD_c = -c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
-#Motor response
-[y_A_X,t,x] = lsim(motor_TF_A,mA_c,t);
-[y_B_X,t,x] = lsim(motor_TF_B,mB_c,t);
-[y_C_X,t,x] = lsim(motor_TF_C,mC_c,t);
-[y_D_X,t,x] = lsim(motor_TF_D,mD_c,t);
-figure(2)
-subplot(2,1,2)
-plot(t,y_A_X,t,y_B_X,t,y_C_X,t,y_D_X)
-#Cube response
-[y_Ax,t,x] = lsim(cube_TF_Ax,y_A_X,t);
-[y_Ay,t,x] = lsim(cube_TF_Ay,y_A_X,t);
-[y_Az,t,x] = lsim(cube_TF_Az,y_A_X,t);
-[y_Bx,t,x] = lsim(cube_TF_Bx,y_B_X,t);
-[y_By,t,x] = lsim(cube_TF_By,y_B_X,t);
-[y_Bz,t,x] = lsim(cube_TF_Bz,y_B_X,t);
-[y_Cx,t,x] = lsim(cube_TF_Cx,y_C_X,t);
-[y_Cy,t,x] = lsim(cube_TF_Cy,y_C_X,t);
-[y_Cz,t,x] = lsim(cube_TF_Cz,y_C_X,t);
-[y_Dx,t,x] = lsim(cube_TF_Dx,y_D_X,t);
-[y_Dy,t,x] = lsim(cube_TF_Dy,y_D_X,t);
-[y_Dz,t,x] = lsim(cube_TF_Dz,y_D_X,t);
-
-y_X = y_Ax+y_Bx+y_Cx+y_Dx;
-y_Y = y_Ay+y_By+y_Cy+y_Dy;
-y_Z = y_Az+y_Bz+y_Cz+y_Dz;
-
-subplot(2,1,1)
-plot(t,y_X,t,y_Y,t,y_Z)
-
-#Step z-axis only
-X_i = 0; Y_i = 0; Z_i = 0;
-Z_i = ones(1,length(t));
-mA_c = c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
-mB_c = c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
-mC_c = -c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
-mD_c = -c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
-#Motor response
-[y_A_X,t,x] = lsim(motor_TF_A,mA_c,t);
-[y_B_X,t,x] = lsim(motor_TF_B,mB_c,t);
-[y_C_X,t,x] = lsim(motor_TF_C,mC_c,t);
-[y_D_X,t,x] = lsim(motor_TF_D,mD_c,t);
-figure(3)
-subplot(2,1,2)
-plot(t,y_A_X,t,y_B_X,t,y_C_X,t,y_D_X)
-#Cube response
-[y_Ax,t,x] = lsim(cube_TF_Ax,y_A_X,t);
-[y_Ay,t,x] = lsim(cube_TF_Ay,y_A_X,t);
-[y_Az,t,x] = lsim(cube_TF_Az,y_A_X,t);
-[y_Bx,t,x] = lsim(cube_TF_Bx,y_B_X,t);
-[y_By,t,x] = lsim(cube_TF_By,y_B_X,t);
-[y_Bz,t,x] = lsim(cube_TF_Bz,y_B_X,t);
-[y_Cx,t,x] = lsim(cube_TF_Cx,y_C_X,t);
-[y_Cy,t,x] = lsim(cube_TF_Cy,y_C_X,t);
-[y_Cz,t,x] = lsim(cube_TF_Cz,y_C_X,t);
-[y_Dx,t,x] = lsim(cube_TF_Dx,y_D_X,t);
-[y_Dy,t,x] = lsim(cube_TF_Dy,y_D_X,t);
-[y_Dz,t,x] = lsim(cube_TF_Dz,y_D_X,t);
-
-y_X = y_Ax+y_Bx+y_Cx+y_Dx;
-y_Y = y_Ay+y_By+y_Cy+y_Dy;
-y_Z = y_Az+y_Bz+y_Cz+y_Dz;
-
-subplot(2,1,1)
-plot(t,y_X,t,y_Y,t,y_Z)
-
-#Step random direction
-
-X_i = 0; Y_i = 0; Z_i = 0;
-X_i = ones(1,length(t))*-25;
-Y_i = ones(1,length(t))*70;
-Z_i = ones(1,length(t))*10;
-mA_c = c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
-mB_c = c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
-mC_c = -c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
-mD_c = -c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
-#Motor response
-[y_A_X,t,x] = lsim(motor_TF_A,mA_c,t);
-[y_B_X,t,x] = lsim(motor_TF_B,mB_c,t);
-[y_C_X,t,x] = lsim(motor_TF_C,mC_c,t);
-[y_D_X,t,x] = lsim(motor_TF_D,mD_c,t);
-figure(4)
-subplot(2,1,2)
-plot(t,y_A_X,t,y_B_X,t,y_C_X,t,y_D_X)
-#Cube response
-[y_Ax,t,x] = lsim(cube_TF_Ax,y_A_X,t);
-[y_Ay,t,x] = lsim(cube_TF_Ay,y_A_X,t);
-[y_Az,t,x] = lsim(cube_TF_Az,y_A_X,t);
-[y_Bx,t,x] = lsim(cube_TF_Bx,y_B_X,t);
-[y_By,t,x] = lsim(cube_TF_By,y_B_X,t);
-[y_Bz,t,x] = lsim(cube_TF_Bz,y_B_X,t);
-[y_Cx,t,x] = lsim(cube_TF_Cx,y_C_X,t);
-[y_Cy,t,x] = lsim(cube_TF_Cy,y_C_X,t);
-[y_Cz,t,x] = lsim(cube_TF_Cz,y_C_X,t);
-[y_Dx,t,x] = lsim(cube_TF_Dx,y_D_X,t);
-[y_Dy,t,x] = lsim(cube_TF_Dy,y_D_X,t);
-[y_Dz,t,x] = lsim(cube_TF_Dz,y_D_X,t);
-
-y_X = y_Ax+y_Bx+y_Cx+y_Dx;
-y_Y = y_Ay+y_By+y_Cy+y_Dy;
-y_Z = y_Az+y_Bz+y_Cz+y_Dz;
-
-subplot(2,1,1)
-plot(t,y_X,t,y_Y,t,y_Z)
-
-[y,t,x] = step(sys_motor);
-figure(5)
-plot(t,y)
+%t = 0:0.01:1;
+%#Step Y-axis only
+%X_i = 0; Y_i = 0; Z_i = 0;
+%Y_i = ones(1,length(t));
+%mA_c = c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
+%mB_c = c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
+%mC_c = -c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
+%mD_c = -c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
+%#Motor response
+%[y_A_X,t,x] = lsim(motor_TF_A,mA_c,t);
+%[y_B_X,t,x] = lsim(motor_TF_B,mB_c,t);
+%[y_C_X,t,x] = lsim(motor_TF_C,mC_c,t);
+%[y_D_X,t,x] = lsim(motor_TF_D,mD_c,t);
+%figure(2)
+%subplot(2,1,2)
+%plot(t,y_A_X,t,y_B_X,t,y_C_X,t,y_D_X)
+%#Cube response
+%[y_Ax,t,x] = lsim(cube_TF_Ax,y_A_X,t);
+%[y_Ay,t,x] = lsim(cube_TF_Ay,y_A_X,t);
+%[y_Az,t,x] = lsim(cube_TF_Az,y_A_X,t);
+%[y_Bx,t,x] = lsim(cube_TF_Bx,y_B_X,t);
+%[y_By,t,x] = lsim(cube_TF_By,y_B_X,t);
+%[y_Bz,t,x] = lsim(cube_TF_Bz,y_B_X,t);
+%[y_Cx,t,x] = lsim(cube_TF_Cx,y_C_X,t);
+%[y_Cy,t,x] = lsim(cube_TF_Cy,y_C_X,t);
+%[y_Cz,t,x] = lsim(cube_TF_Cz,y_C_X,t);
+%[y_Dx,t,x] = lsim(cube_TF_Dx,y_D_X,t);
+%[y_Dy,t,x] = lsim(cube_TF_Dy,y_D_X,t);
+%[y_Dz,t,x] = lsim(cube_TF_Dz,y_D_X,t);
+%
+%y_X = y_Ax+y_Bx+y_Cx+y_Dx;
+%y_Y = y_Ay+y_By+y_Cy+y_Dy;
+%y_Z = y_Az+y_Bz+y_Cz+y_Dz;
+%
+%subplot(2,1,1)
+%plot(t,y_X,t,y_Y,t,y_Z)
+%
+%#Step z-axis only
+%X_i = 0; Y_i = 0; Z_i = 0;
+%Z_i = ones(1,length(t));
+%mA_c = c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
+%mB_c = c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
+%mC_c = -c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
+%mD_c = -c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
+%#Motor response
+%[y_A_X,t,x] = lsim(motor_TF_A,mA_c,t);
+%[y_B_X,t,x] = lsim(motor_TF_B,mB_c,t);
+%[y_C_X,t,x] = lsim(motor_TF_C,mC_c,t);
+%[y_D_X,t,x] = lsim(motor_TF_D,mD_c,t);
+%figure(3)
+%subplot(2,1,2)
+%plot(t,y_A_X,t,y_B_X,t,y_C_X,t,y_D_X)
+%#Cube response
+%[y_Ax,t,x] = lsim(cube_TF_Ax,y_A_X,t);
+%[y_Ay,t,x] = lsim(cube_TF_Ay,y_A_X,t);
+%[y_Az,t,x] = lsim(cube_TF_Az,y_A_X,t);
+%[y_Bx,t,x] = lsim(cube_TF_Bx,y_B_X,t);
+%[y_By,t,x] = lsim(cube_TF_By,y_B_X,t);
+%[y_Bz,t,x] = lsim(cube_TF_Bz,y_B_X,t);
+%[y_Cx,t,x] = lsim(cube_TF_Cx,y_C_X,t);
+%[y_Cy,t,x] = lsim(cube_TF_Cy,y_C_X,t);
+%[y_Cz,t,x] = lsim(cube_TF_Cz,y_C_X,t);
+%[y_Dx,t,x] = lsim(cube_TF_Dx,y_D_X,t);
+%[y_Dy,t,x] = lsim(cube_TF_Dy,y_D_X,t);
+%[y_Dz,t,x] = lsim(cube_TF_Dz,y_D_X,t);
+%
+%y_X = y_Ax+y_Bx+y_Cx+y_Dx;
+%y_Y = y_Ay+y_By+y_Cy+y_Dy;
+%y_Z = y_Az+y_Bz+y_Cz+y_Dz;
+%
+%subplot(2,1,1)
+%plot(t,y_X,t,y_Y,t,y_Z)
+%
+%#Step random direction
+%
+%X_i = 0; Y_i = 0; Z_i = 0;
+%X_i = ones(1,length(t))*-25;
+%Y_i = ones(1,length(t))*70;
+%Z_i = ones(1,length(t))*10;
+%mA_c = c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
+%mB_c = c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
+%mC_c = -c_a*  X_i - c_b*  Y_i + c_c*  Z_i;
+%mD_c = -c_a*  X_i + c_b*  Y_i + c_c*  Z_i;
+%#Motor response
+%[y_A_X,t,x] = lsim(motor_TF_A,mA_c,t);
+%[y_B_X,t,x] = lsim(motor_TF_B,mB_c,t);
+%[y_C_X,t,x] = lsim(motor_TF_C,mC_c,t);
+%[y_D_X,t,x] = lsim(motor_TF_D,mD_c,t);
+%figure(4)
+%subplot(2,1,2)
+%plot(t,y_A_X,t,y_B_X,t,y_C_X,t,y_D_X)
+%#Cube response
+%[y_Ax,t,x] = lsim(cube_TF_Ax,y_A_X,t);
+%[y_Ay,t,x] = lsim(cube_TF_Ay,y_A_X,t);
+%[y_Az,t,x] = lsim(cube_TF_Az,y_A_X,t);
+%[y_Bx,t,x] = lsim(cube_TF_Bx,y_B_X,t);
+%[y_By,t,x] = lsim(cube_TF_By,y_B_X,t);
+%[y_Bz,t,x] = lsim(cube_TF_Bz,y_B_X,t);
+%[y_Cx,t,x] = lsim(cube_TF_Cx,y_C_X,t);
+%[y_Cy,t,x] = lsim(cube_TF_Cy,y_C_X,t);
+%[y_Cz,t,x] = lsim(cube_TF_Cz,y_C_X,t);
+%[y_Dx,t,x] = lsim(cube_TF_Dx,y_D_X,t);
+%[y_Dy,t,x] = lsim(cube_TF_Dy,y_D_X,t);
+%[y_Dz,t,x] = lsim(cube_TF_Dz,y_D_X,t);
+%
+%y_X = y_Ax+y_Bx+y_Cx+y_Dx;
+%y_Y = y_Ay+y_By+y_Cy+y_Dy;
+%y_Z = y_Az+y_Bz+y_Cz+y_Dz;
+%
+%subplot(2,1,1)
+%plot(t,y_X,t,y_Y,t,y_Z)
+%
+%[y,t,x] = step(sys_motor);
+%figure(5)
+%plot(t,y)
