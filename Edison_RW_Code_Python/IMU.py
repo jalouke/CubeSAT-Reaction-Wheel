@@ -7,10 +7,10 @@ from LSM9DS0 import *
 bus = smbus.SMBus(1)
 LA_So = .000732 # g/LSB (16g)
 M_GN = 0.48 # mgauss/LSB (12 gauss)
-G_So = 0.07 # dps/LSB (2000dps)
-GYRx_offset = -0.24 
-GYRy_offset = -6.72 
-GYRz_offset = -0.24 
+G_So = 0.00875 # dps/LSB (2000dps)
+GYRx_offset = 109.08
+GYRy_offset = -157.11
+GYRz_offset = -124.2
 timestart = time.time()
 MAGx_bias = -18.0000
 MAGx_scale = 1.0578
@@ -106,18 +106,20 @@ writeMAG(CTRL_REG6_XM, 0b01100000) #+/-12gauss
 writeMAG(CTRL_REG7_XM, 0b00000000) #Continuous-conversion mode
 
 #initialise the gyroscope
-writeGRY(CTRL_REG1_G, 0b00001111) #Normal power mode, all axes enabled
-writeGRY(CTRL_REG4_G, 0b00110000) #Continuos update, 2000 dps full scale
+writeGRY(CTRL_REG1_G, 0b00001111) #Normal power mode, all axes enabled (95 Hz 12.5 cutoff)
+writeGRY(CTRL_REG2_G, 0b00100001) #High-pass filter: Normal mode, 13.5 Hz
+writeGRY(CTRL_REG4_G, 0b00000000) #Continuos update, 245 dps full scale
+
 
 def read():
+	global MAGx_scale,MAGy_scale,MAGz_scale,MAGx_bias,MAGy_bias,MAGz_bias,GYRx_offset,GYRy_offset,GYRz_offset
 	a = time.time()
-	global ACCx,ACCy,ACCz,GYRx,GYRy,GYRz,MAGx,MAGy,MAGz
 	ACCx = LA_So*readACCx()
 	ACCy = LA_So*readACCy()
 	ACCz = LA_So*readACCz()
-	GYRx = G_So*readGYRx() - GYRx_offset
-	GYRy = G_So*readGYRy() - GYRy_offset
-	GYRz = G_So*readGYRz() - GYRz_offset
+	GYRx = G_So*(readGYRx() - GYRx_offset)
+	GYRy = G_So*(readGYRy() - GYRy_offset)
+	GYRz = G_So*(readGYRz() - GYRz_offset)
 	MAGx = M_GN*(MAGx_scale * readMAGx()) + MAGx_bias
 	MAGy = M_GN*(MAGy_scale * readMAGy()) + MAGy_bias
 	MAGz = M_GN*(MAGz_scale * readMAGz()) + MAGz_bias
