@@ -6,7 +6,7 @@ close all
 graphics_toolkit("qt")
 n=1;
 Ic_xx = 2.5; Ic_yy = 2.5; Ic_zz = 2.5; #principal inertia values (lb*in^2)
-I_rw = 0.01; #rotational inertia of the reaction wheels (lb*in^2)
+I_rw = 0.01#0.0198; #rotational inertia of the reaction wheels (lb*in^2)
 b_a = 0; b_b = 0; b_c = 0; #damping coefficients
 #Transfer Function Coefficients
 TF_cube_coeff_a = [Ic_xx/I_rw, Ic_yy/I_rw, Ic_zz/I_rw];
@@ -125,7 +125,6 @@ ylabel(hAx(2),'Motor Torque (mNm)') % right y-axis
 title('Motor A Response')
 xlabel('Time (sec)')
 
-
 Data = csvread("CubeSat_Drop_4-26.csv");
 Data = Data(2:end,:);
 time = Data(:,1);
@@ -138,17 +137,12 @@ M_Vel = Motor_Velocity(216:end);
 Gyr = GYRz(216:end);
 t = time(216:end);
 
+figure(6)
+[AX,H1,H2] = plotyy(t,Gyr,t,M_Vel);
+ylim([-50,50]);
 Kp_drop = 195.86;
 x0 = [0,45.712];
 [y_drop,ta,x] = lsim(Full_cube_TF(1,1)*Kp_drop,M_Vel,t,x0);
 figure(7)
-[hAd,hLine5,hLine6] = plotyy(t,y_drop,t,M_Vel);
-set(hLine5,'color','b')
-hold on
+plotyy(t,y_drop,t,M_Vel);
 ylim([-50,50]);
-plot(t,Gyr,'m')
-hold off
-ylabel(hAd(1), 'Cube Angular Velocity (deg/s)')
-ylabel(hAd(2),'Controller Input')
-legend('Gyro Rate','Model Output','Controller Input')
-print -djpeg Model_Gyr_vs_Motor_input.jpg;
