@@ -90,41 +90,47 @@ plot(t,y_cube)
 
 %%PI controller
 %%Ki/Kp = 100
-Kp = 10^(5/20);
-Ki = 100*Kp;
+Kp_i = 10^(5/20);
+Ki = 100*Kp_i;
 Gc_PI = Kp+Ki/s;
 Gc_PI = eye(3)*Gc_PI;
 figure(3)
-bode(Full_cube_TF(1,1)*Gc_PI(1,1))
-margin(Full_cube_TF(1,1)*Gc_PI(1,1))
+bode(Full_cube_TF(1,1)*Gc_PI(1,1));
+margin(Full_cube_TF(1,1)*Gc_PI(1,1));
 [y_Gc,t,x]=lsim(feedback(Full_cube_TF(1,1)*Gc_PI),[X_i,Y_i,Z_i],t_i);
 Motor_response = feedback(Gc_PI(1,1)*Card_to_Motor,cube_TF);
-[y_vel,t,x] = lsim(Motor_response(1,1),X_i,t_i);
-figure(4)
-plot(step(feedback(Full_cube_TF(1,1)*Gc_PI(1,1))))
-hold on
-plot(step(feedback(Full_cube_TF(1,1))))
-hold off
 
+[y_vel,t,x] = lsim(Motor_response(1,1),X_i,t_i);
 y_acc = diff(y_vel)./diff(t);
 y_torque = y_acc*(I)*10^3;
 [y_pos,t,x] = lsim(1/s,y_Gc(:,1),t);
 
-figure(5)
+figure(4)
 hAb = subplot(2,1,1)
-[hAy,hLine1,hLine2] = plotyy(t_i,y_Gc(:,1),t_i,y_pos)
+[hAy,hLine1,hLine2] = plotyy(t_i,y_Gc(:,1),t_i,y_pos);
 ylabel(hAy(1),'Cube Angular Velocity (rad/s)') % left y-axis
 ylabel(hAy(2),'Cube Angular Position (rad)') % right y-axis
 title('Cube Response')
 xlabel('Time (sec)')
 %figure(6)
 hAa = subplot(2,1,2)
-[hAx,hLine3,hLine4] = plotyy(t_i(1:end-1),y_vel(1:end-1),t_i(1:end-1),y_torque)
+[hAx,hLine3,hLine4] = plotyy(t_i(1:end-1),y_vel(1:end-1),t_i(1:end-1),y_torque);
 ylabel(hAx(1),'Motor-A Angular Velocity (rad/s)') % left y-axis
 ylabel(hAx(2),'Motor Torque (mNm)') % right y-axis
 title('Motor A Response')
 xlabel('Time (sec)')
 
+t_x = linspace(0,1,100);
+Y_x = ones(1,length(t_x));
+[Y_pi,t,x] = lsim(feedback(Full_cube_TF(1,1)*Gc_PI(1,1)),Y_x,t_x);
+[Y_ol,t,x] = lsim(Full_cube_TF(1,1),Y_x,t_x);
+figure(6)
+plot(t,Y_pi,t,Y_ol);
+xlabel('time (s)');
+ylabel('Cube Angular Velocity (rad/s)');
+title('CubeSat Reaction Wheel Velocity Response');
+legend('PI controller Response','Open Loop Response');
+print -dsvg CubeSat_Reaction_Wheel_Velocity_Response.svg;
 
 Data = csvread("CubeSat_Drop_4-26.csv");
 Data = Data(2:end,:);
@@ -139,16 +145,20 @@ Gyr = GYRz(216:end);
 t = time(216:end);
 
 Kp_drop = 195.86;
-x0 = [0,45.712];
+x0 = [-5,45.712];
 [y_drop,ta,x] = lsim(Full_cube_TF(1,1)*Kp_drop,M_Vel,t,x0);
 figure(7)
 [hAd,hLine5,hLine6] = plotyy(t,y_drop,t,M_Vel);
-set(hLine5,'color','b')
+set(hLine5,'color','b');
 hold on
 ylim([-50,50]);
-plot(t,Gyr,'m')
+plot(t,Gyr,'m');
 hold off
-ylabel(hAd(1), 'Cube Angular Velocity (deg/s)')
-ylabel(hAd(2),'Controller Input')
-legend('Gyro Rate','Model Output','Controller Input')
-print -djpeg Model_Gyr_vs_Motor_input.jpg;
+ylabel(hAd(1), 'Cube Angular Velocity (deg/s)');
+ylabel(hAd(2),'Controller Input');
+xlabel('time (s)');
+legend('Gyro Rate','Model Output','Controller Input');
+title('Drop Test Gyro Data Compared to Model');
+print -dpng Gyro_Data_vs_Model.png;
+
+
