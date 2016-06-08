@@ -8,7 +8,7 @@ import sys
 
 #########################################################
 # initializing Variables
-Frequency = 1 #frequency of input response in Hz
+Frequency = .1 #frequency of input response in Hz
 A_motor_velocity=B_motor_velocity=C_motor_velocity=D_motor_velocity=0
 X_velocity=Y_velocity=Z_velocity=0
 A=B=C=D=E=F=G=H=I=0
@@ -34,7 +34,7 @@ for x in xrange(4,9):
 	print x, output[x]
 [Apwm,Bpwm,Cpwm,Dpwm,Adir,Bdir,Cdir,Ddir,mode] = output
 output[8].write(1) #Set mode pin to high for pwm/direction
-print Apwm
+#print Apwm
 ###########################################################
 def A_motor(A_motor_velocity):
         if A_motor_velocity >= 0:
@@ -49,7 +49,7 @@ def A_motor(A_motor_velocity):
                          A_motor_speed = 1
         Adir.write(A_motor_dir)
         Apwm.write(A_motor_speed)
-        print A_motor_dir,A_motor_speed
+        #print A_motor_dir,A_motor_speed
 def B_motor(B_motor_velocity):
         if B_motor_velocity >= 0:
                  B_motor_dir = 1
@@ -101,8 +101,8 @@ def shutdown():
         sys.exit() 
 def freq_response(Frequency,timestart):
         t = time.time()-timestart
-        Z_velocity = np.sin(Frequency*t*pi*2)
-        print t,Z_velocity
+        Z_velocity = 2.41*np.sin(Frequency*t*pi*2)
+        #print t,Z_velocity
         [A_Motor_velocity,B_Motor_velocity,C_Motor_velocity,D_Motor_velocity]=np.dot(Card_to_Motor,[[X_velocity],[Y_velocity],[Z_velocity]])
         return float(A_Motor_velocity),float(B_Motor_velocity),float(C_Motor_velocity),float(D_Motor_velocity)
 filename = time.strftime("%Y-%m-%d_%H-%M-%S")
@@ -112,16 +112,18 @@ Data.write('Time,ACCz,GYRx,GYRy,GYRz,MAGx,MAGy,MAGz,A_Motor_velocity,B_Motor_vel
 while True:
         [ACCx,ACCy,ACCz,GYRx,GYRy,GYRz,MAGx,MAGy,MAGz] = IMU.read()
         timestart = time.time()
+	print ACCz
         while ACCz > -.8:
+        	[ACCx,ACCy,ACCz,GYRx,GYRy,GYRz,MAGx,MAGy,MAGz] = IMU.read()
                 t = time.time()-timestart
                 phase = 2
                 [A_Motor_velocity,B_Motor_velocity,C_Motor_velocity,D_Motor_velocity] = freq_response(Frequency,timestart)
-                print A_Motor_velocity,B_Motor_velocity,C_Motor_velocity,D_Motor_velocity
+                #print A_Motor_velocity,B_Motor_velocity,C_Motor_velocity,D_Motor_velocity
                 A_motor(A_Motor_velocity)
                 B_motor(B_Motor_velocity)
                 C_motor(C_Motor_velocity)
                 D_motor(D_Motor_velocity)
-                print A_Motor_velocity
+                print ACCz
                 Data.write('%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f\n' % (t,ACCz,GYRx,GYRy,GYRz,MAGx,MAGy,MAGz,A_Motor_velocity,B_Motor_velocity,C_Motor_velocity,D_Motor_velocity))
         if phase == 2 and ACCz <-.8:
                 shutdown()
