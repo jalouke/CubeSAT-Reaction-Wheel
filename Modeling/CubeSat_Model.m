@@ -44,129 +44,129 @@ omega_a = c_a*y_x + c_b*y_y + c_c*y_z;
 omega_b = c_a*y_x - c_b*y_y + c_c*y_z;
 omega_c = -c_a*y_x - c_b*y_y + c_c*y_z;
 omega_d = -c_a*y_x + c_b*y_y + c_c*y_z;
-%figure(1);
-%hold on;
-%subplot(3,2,1)
-%plot(t,y_x);
-%xlabel('seconds');
-%ylabel("Cube Angular Velocity\n(degrees/s)");
-%title('step response (angular velocity) of x-axis')
-%legend('cube-x')
-%subplot(3,2,2)
-%plot(t,omega_a,'k',t,omega_b,'r',t,omega_c,'g',t,omega_d,'b')
-%xlabel('seconds','FontSize',12);
-%ylabel("Motor Angular Velocity\n(degrees/s)");
-%title('Motor velocities')
-%legend('Motor A','Motor B','Motor C','Motor D')
-%y step with motor velocity
-%y_x=0;y_y=0;y_z=0;
-%c_x=0;c_y=0;c_z=0;
-%[c_y,t,x]=step(cube_sys_y,t);
-%[y_y,t,x]=step(motor_TF,t);
-%omega_a = c_a*y_x + c_b*y_y + c_c*y_z;
-%omega_b = c_a*y_x - c_b*y_y + c_c*y_z;
-%omega_c = -c_a*y_x - c_b*y_y + c_c*y_z;
-%omega_d = -c_a*y_x + c_b*y_y + c_c*y_z;
-%subplot(3,2,3)
-%plot(t,y_y);
-%xlabel('seconds');
-%ylabel("Cube Angular Velocity\n(degrees/s)");
-%title('step response (angular velocity) of y-axis')
-%legend('cube-y')
-%subplot(3,2,4)
-%plot(t,omega_a,'k',t,omega_b,'r',t,omega_c,'g',t,omega_d,'b')
-%xlabel('seconds');
-%ylabel("Motor Angular Velocity\n(degrees/s)");
-%title('motor velocities')
-%legend('Motor A','Motor B','Motor C','Motor D')
-%y step with motor velocity
-%y_x=0;y_y=0;y_z=0;
-%c_x=0;c_y=0;c_z=0;
-%[c_z,t,x]=step(cube_sys_z,t);
-%[y_z,t,x]=step(motor_TF,t);
-%omega_a = c_a*y_x + c_b*y_y + c_c*y_z;
-%omega_b = c_a*y_x - c_b*y_y + c_c*y_z;
-%omega_c = -c_a*y_x - c_b*y_y + c_c*y_z;
-%omega_d = -c_a*y_x + c_b*y_y + c_c*y_z;
-%subplot(3,2,5)
-%plot(t,y_z);
-%xlabel('seconds');
-%ylabel('Cube (degrees/s)');
-%title('step response (angular velocity) of z-axis')
-%legend('cube-z')
-%subplot(3,2,6)
-%plot(t,omega_a,'k',t,omega_b,'r',t,omega_c,'g',t,omega_d,'b')
-%xlabel('seconds');
-%ylabel('Motors (degrees/s)');
-%title('Motor velocities')
-%legend('Motor A','Motor B','Motor C','Motor D')
-%hold off;
-%vector step (i+j+k) with motor velocity
-%y_x=0;y_y=0;y_z=0;
-%c_x=0;c_y=0;c_z=0;
-%sx = 2; sy = 15; sz = -8;
-%[c_x,t,x]=step(cube_sys_x*sx,t);
-%[c_y,t,x]=step(cube_sys_y*sy,t);
-%[c_z,t,x]=step(cube_sys_z*sz,t);
-%[y_x,t,x]=step(motor_TF*sx,t);
-%[y_y,t,x]=step(motor_TF*sy,t);
-%[y_z,t,x]=step(motor_TF*sz,t);
-%omega_a = c_a*y_x + c_b*y_y + c_c*y_z;
-%omega_b = c_a*y_x - c_b*y_y + c_c*y_z;
-%omega_c = -c_a*y_x - c_b*y_y + c_c*y_z;
-%omega_d = -c_a*y_x + c_b*y_y + c_c*y_z;
-%figure(2);
-%hold on;
-%subplot(1,2,1)
-%plot(t,c_x,'k',t,c_y,'r',t,c_z,'g');
-%xlabel('seconds','FontSize',12);
-%ylabel('Cube (degrees/s)','FontSize',12);
-%title('vector step response(3i+5j+2k)','FontSize',12)
-%legend('cube-x','cube-y','cube-z')
-%subplot(1,2,2)
-%plot(t,omega_a,'k',t,omega_b,'r',t,omega_c,'g',t,omega_d,'b')
-%xlabel('seconds','FontSize',12);
-%ylabel('Motors (degrees/s)','FontSize',12);
-%title('motor velocity','FontSize',12)
-%legend('Motor A','Motor B','Motor C','Motor D')
-%hold off;
-%recalculate cardinal input velocity
-%in_x = sind(45)*(omega_a+omega_b-omega_c-omega_d);
-%in_y = cosd(45)*(omega_a-omega_b-omega_c+omega_d);
-%in_z = cosd(53)*(omega_a+omega_b+omega_c+omega_d);
-%figure(3);
-%plot(t,in_x,'k',t,in_y,'r',t,in_z,'g')
-%legend('in-x','in-y','in-z')
+figure(1);
+hold on;
+subplot(3,2,1)
+plot(t,y_x);
+xlabel('seconds');
+ylabel("Cube Angular Velocity\n(degrees/s)");
+title('step response (angular velocity) of x-axis')
+legend('cube-x')
+subplot(3,2,2)
+plot(t,omega_a,'k',t,omega_b,'r',t,omega_c,'g',t,omega_d,'b')
+xlabel('seconds','FontSize',12);
+ylabel("Motor Angular Velocity\n(degrees/s)");
+title('Motor velocities')
+legend('Motor A','Motor B','Motor C','Motor D')
+y step with motor velocity
+y_x=0;y_y=0;y_z=0;
+c_x=0;c_y=0;c_z=0;
+[c_y,t,x]=step(cube_sys_y,t);
+[y_y,t,x]=step(motor_TF,t);
+omega_a = c_a*y_x + c_b*y_y + c_c*y_z;
+omega_b = c_a*y_x - c_b*y_y + c_c*y_z;
+omega_c = -c_a*y_x - c_b*y_y + c_c*y_z;
+omega_d = -c_a*y_x + c_b*y_y + c_c*y_z;
+subplot(3,2,3)
+plot(t,y_y);
+xlabel('seconds');
+ylabel("Cube Angular Velocity\n(degrees/s)");
+title('step response (angular velocity) of y-axis')
+legend('cube-y')
+subplot(3,2,4)
+plot(t,omega_a,'k',t,omega_b,'r',t,omega_c,'g',t,omega_d,'b')
+xlabel('seconds');
+ylabel("Motor Angular Velocity\n(degrees/s)");
+title('motor velocities')
+legend('Motor A','Motor B','Motor C','Motor D')
+y step with motor velocity
+y_x=0;y_y=0;y_z=0;
+c_x=0;c_y=0;c_z=0;
+[c_z,t,x]=step(cube_sys_z,t);
+[y_z,t,x]=step(motor_TF,t);
+omega_a = c_a*y_x + c_b*y_y + c_c*y_z;
+omega_b = c_a*y_x - c_b*y_y + c_c*y_z;
+omega_c = -c_a*y_x - c_b*y_y + c_c*y_z;
+omega_d = -c_a*y_x + c_b*y_y + c_c*y_z;
+subplot(3,2,5)
+plot(t,y_z);
+xlabel('seconds');
+ylabel('Cube (degrees/s)');
+title('step response (angular velocity) of z-axis')
+legend('cube-z')
+subplot(3,2,6)
+plot(t,omega_a,'k',t,omega_b,'r',t,omega_c,'g',t,omega_d,'b')
+xlabel('seconds');
+ylabel('Motors (degrees/s)');
+title('Motor velocities')
+legend('Motor A','Motor B','Motor C','Motor D')
+hold off;
+vector step (i+j+k) with motor velocity
+y_x=0;y_y=0;y_z=0;
+c_x=0;c_y=0;c_z=0;
+sx = 2; sy = 15; sz = -8;
+[c_x,t,x]=step(cube_sys_x*sx,t);
+[c_y,t,x]=step(cube_sys_y*sy,t);
+[c_z,t,x]=step(cube_sys_z*sz,t);
+[y_x,t,x]=step(motor_TF*sx,t);
+[y_y,t,x]=step(motor_TF*sy,t);
+[y_z,t,x]=step(motor_TF*sz,t);
+omega_a = c_a*y_x + c_b*y_y + c_c*y_z;
+omega_b = c_a*y_x - c_b*y_y + c_c*y_z;
+omega_c = -c_a*y_x - c_b*y_y + c_c*y_z;
+omega_d = -c_a*y_x + c_b*y_y + c_c*y_z;
+figure(2);
+hold on;
+subplot(1,2,1)
+plot(t,c_x,'k',t,c_y,'r',t,c_z,'g');
+xlabel('seconds','FontSize',12);
+ylabel('Cube (degrees/s)','FontSize',12);
+title('vector step response(3i+5j+2k)','FontSize',12)
+legend('cube-x','cube-y','cube-z')
+subplot(1,2,2)
+plot(t,omega_a,'k',t,omega_b,'r',t,omega_c,'g',t,omega_d,'b')
+xlabel('seconds','FontSize',12);
+ylabel('Motors (degrees/s)','FontSize',12);
+title('motor velocity','FontSize',12)
+legend('Motor A','Motor B','Motor C','Motor D')
+hold off;
+recalculate cardinal input velocity
+in_x = sind(45)*(omega_a+omega_b-omega_c-omega_d);
+in_y = cosd(45)*(omega_a-omega_b-omega_c+omega_d);
+in_z = cosd(53)*(omega_a+omega_b+omega_c+omega_d);
+figure(3);
+plot(t,in_x,'k',t,in_y,'r',t,in_z,'g')
+legend('in-x','in-y','in-z')
 
-%y_x =4, y_y = -23, y_z = 45
-%omega_a = c_a*y_x + c_b*y_y + c_c*y_z 
-%omega_b = c_a*y_x - c_b*y_y + c_c*y_z 
-%omega_c = -c_a*y_x - c_b*y_y + c_c*y_z 
-%omega_d = -c_a*y_x + c_b*y_y + c_c*y_z 
-%sind(45)*(omega_a+omega_b-omega_c-omega_d)
-%cosd(45)*(omega_a-omega_b-omega_c+omega_d)
-%cosd(53)*(omega_a+omega_b+omega_c+omega_d)
-%bode(motor_TF*cube_TF_x)
-%margin(motor_TF*cube_TF_x)
-%PI controller model
-%increase phase margin
-%pick 1 rad/s, yields:
+y_x =4, y_y = -23, y_z = 45
+omega_a = c_a*y_x + c_b*y_y + c_c*y_z 
+omega_b = c_a*y_x - c_b*y_y + c_c*y_z 
+omega_c = -c_a*y_x - c_b*y_y + c_c*y_z 
+omega_d = -c_a*y_x + c_b*y_y + c_c*y_z 
+sind(45)*(omega_a+omega_b-omega_c-omega_d)
+cosd(45)*(omega_a-omega_b-omega_c+omega_d)
+cosd(53)*(omega_a+omega_b+omega_c+omega_d)
+bode(motor_TF*cube_TF_x)
+margin(motor_TF*cube_TF_x)
+PI controller model
+increase phase margin
+pick 1 rad/s, yields:
 
-%omega_g = .02;
-%G_omega_g = abs(15);
-%Kp_x = 10^(G_omega_g/20);
-%Ki_x = omega_g/10*Kp_x;
-%Gc_x = Kp_x + (Ki_x/s)
+omega_g = .02;
+G_omega_g = abs(15);
+Kp_x = 10^(G_omega_g/20);
+Ki_x = omega_g/10*Kp_x;
+Gc_x = Kp_x + (Ki_x/s)
 
-%open loop response
-%figure(4);
+open loop response
+figure(4);
 
-%bode(cube_sys_x*Gc_x)
-%margin(cube_sys_x*Gc_x)
-%CL_cube_sys_x = feedback(cube_sys_x,Gc_x);
-%[y_cl_x,t,x]=step(CL_cube_sys_x,t);
-%figure(5);
-%plot(t,y_cl_x)
+bode(cube_sys_x*Gc_x)
+margin(cube_sys_x*Gc_x)
+CL_cube_sys_x = feedback(cube_sys_x,Gc_x);
+[y_cl_x,t,x]=step(CL_cube_sys_x,t);
+figure(5);
+plot(t,y_cl_x)
 
 
 %equations for motor speed

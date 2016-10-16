@@ -92,7 +92,7 @@ plot(t,y_cube)
 %%Ki/Kp = 100
 Kp = 10^(5/20);
 Ki = 100*Kp;
-Gc_PI = Kp+Ki/s;
+Gc_PI = 1;%Kp+Ki/s;
 Gc_PI = eye(3)*Gc_PI;
 figure(3)
 bode(Full_cube_TF(1,1)*Gc_PI(1,1))
@@ -117,6 +117,7 @@ ylabel(hAy(1),'Cube Angular Velocity (rad/s)') % left y-axis
 ylabel(hAy(2),'Cube Angular Position (rad)') % right y-axis
 title('Cube Response')
 xlabel('Time (sec)')
+
 %figure(6)
 hAa = subplot(2,1,2)
 [hAx,hLine3,hLine4] = plotyy(t_i(1:end-1),y_vel(1:end-1),t_i(1:end-1),y_torque)
@@ -124,7 +125,7 @@ ylabel(hAx(1),'Motor-A Angular Velocity (rad/s)') % left y-axis
 ylabel(hAx(2),'Motor Torque (mNm)') % right y-axis
 title('Motor A Response')
 xlabel('Time (sec)')
-
+print -dsvg motor_torque.svg;
 Data = csvread("CubeSat_Drop_4-26.csv");
 Data = Data(2:end,:);
 time = Data(:,1);

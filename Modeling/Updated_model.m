@@ -145,7 +145,7 @@ Gyr = GYRz(216:end);
 t = time(216:end);
 
 Kp_drop = 195.86;
-x0 = [-5,45.712];
+x0 = [.25,45.712];
 [y_drop,ta,x] = lsim(Full_cube_TF(1,1)*Kp_drop,M_Vel,t,x0);
 figure(7)
 [hAd,hLine5,hLine6] = plotyy(t,y_drop,t,M_Vel);
@@ -159,6 +159,6 @@ ylabel(hAd(2),'Controller Input');
 xlabel('time (s)');
 legend('Gyro Rate','Model Output','Controller Input');
 title('Drop Test Gyro Data Compared to Model');
-print -dpng Gyro_Data_vs_Model.png;
+print -dsvg Gyro_Data_vs_Model.svg;
 
 
